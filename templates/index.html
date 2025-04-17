@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center text-center">
+        <div class="col-md-8">
+            <h1 class="display-4 mb-4">Welcome to Quiz Master</h1>
+            <p class="lead mb-4">Test your knowledge with our comprehensive quiz platform. Choose from various subjects and chapters to challenge yourself.</p>
+            
+            {% if current_user.is_authenticated %}
+                {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-lg me-3">Go to Admin Dashboard</a>
+                {% else %}
+                    <a href="{{ url_for('user_dashboard') }}" class="btn btn-primary btn-lg me-3">Go to Dashboard</a>
+                    <a href="{{ url_for('available_quizzes') }}" class="btn btn-outline-primary btn-lg">Take a Quiz</a>
+                {% endif %}
+            {% else %}
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 me-sm-3">Login</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg px-4">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Multiple Subjects</h3>
+                    <p class="card-text">Choose from a wide range of subjects and topics to test your knowledge.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Track Progress</h3>
+                    <p class="card-text">Monitor your performance and track your improvement over time.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Instant Results</h3>
+                    <p class="card-text">Get immediate feedback on your quiz attempts and see where you can improve.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

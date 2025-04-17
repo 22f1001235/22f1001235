@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Add Question - {{ quiz.title }} - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="text-primary">Add New Question</h2>
+            <p class="text-muted">Add a question to {{ quiz.title }}</p>
+        </div>
+        <div class="col text-end">
+            <a href="{{ url_for('manage_quizzes') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Quizzes
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-primary">Question Details</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('add_quiz_question', quiz_id=quiz.id) }}" method="POST">
+                <div class="mb-4">
+                    <label for="question_text" class="form-label">Question</label>
+                    <textarea class="form-control" id="question_text" name="question_text" rows="3" required placeholder="Enter your question here..."></textarea>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="option1" class="form-label">Option 1</label>
+                        <input type="text" class="form-control" id="option1" name="option1" required placeholder="Enter option 1">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="option2" class="form-label">Option 2</label>
+                        <input type="text" class="form-control" id="option2" name="option2" required placeholder="Enter option 2">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="option3" class="form-label">Option 3</label>
+                        <input type="text" class="form-control" id="option3" name="option3" required placeholder="Enter option 3">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="option4" class="form-label">Option 4</label>
+                        <input type="text" class="form-control" id="option4" name="option4" required placeholder="Enter option 4">
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="correct_option" class="form-label">Correct Option</label>
+                        <select class="form-select" id="correct_option" name="correct_option" required>
+                            <option value="">Select correct option</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                            <option value="4">Option 4</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="score" class="form-label">Score</label>
+                        <input type="number" class="form-control" id="score" name="score" value="1" min="1" required>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add Question
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Registration Success - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h3 class="text-center">Registration Successful!</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">Your Account Details</h4>
+                        <p>Please save these details carefully:</p>
+                        <hr>
+                        <p class="mb-0"><strong>User ID:</strong> {{ user_id }}</p>
+                        <p class="mb-0"><strong>Password:</strong> {{ password }}</p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <p>You can now <a href="{{ url_for('login') }}">login</a> using these credentials.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

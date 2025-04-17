@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Edit User</h2>
+        </div>
+        <div class="col text-end">
+            <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">Back to Users</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="user_id" class="form-label">User ID</label>
+                        <input type="text" class="form-control" id="user_id" value="{{ user.user_id }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{ user.email }}" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="full_name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user.full_name }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="mobile_no" class="form-label">Mobile Number</label>
+                        <input type="text" class="form-control" id="mobile_no" name="mobile_no" value="{{ user.mobile_no }}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="state" class="form-label">State/UT</label>
+                        <select class="form-select" id="state" name="state" required>
+                            {% for state in states %}
+                            <option value="{{ state }}" {% if state == user.state %}selected{% endif %}>{{ state }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" name="city" value="{{ user.city }}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="qualification" class="form-label">Qualification</label>
+                        <input type="text" class="form-control" id="qualification" name="qualification" value="{{ user.qualification }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="new_password" class="form-label">New Password (leave blank to keep current)</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password">
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

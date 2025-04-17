@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Result - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quiz Summary</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Quiz: {{ attempt.quiz.title }}</h6>
+                    <p class="text-muted">{{ attempt.quiz.chapter.subject.name }} - {{ attempt.quiz.chapter.name }}</p>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span>Score:</span>
+                        <span class="fw-bold {% if attempt.score >= 70 %}text-success{% elif attempt.score >= 40 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ "%.1f"|format(attempt.score) }}%
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <span>Date Attempted:</span>
+                        <span>{{ attempt.date_attempted.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <span>Time Taken:</span>
+                        <span>
+                            {% set total_seconds = ((attempt.date_attempted - attempt.start_time).total_seconds())|int %}
+                            {% set hours = total_seconds // 3600 %}
+                            {% set minutes = (total_seconds % 3600) // 60 %}
+                            {% set seconds = total_seconds % 60 %}
+                            {{ "%02d:%02d:%02d"|format(hours, minutes, seconds) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Question Review</h5>
+                </div>
+                <div class="card-body">
+                    {% for answer in attempt.answers %}
+                    <div class="mb-4">
+                        <h6>Question {{ loop.index }}</h6>
+                        <p>{{ answer.question.question_text }}</p>
+                        <div class="options">
+                            {% for i in range(1, 5) %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" disabled
+                                    {% if i == answer.selected_option %}checked{% endif %}
+                                    {% if i == answer.question.correct_option %}checked{% endif %}>
+                                <label class="form-check-label {% if i == answer.question.correct_option %}text-success{% elif i == answer.selected_option and i != answer.question.correct_option %}text-danger{% endif %}">
+                                    {{ answer.question['option' + i|string] }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">Score: {{ answer.question.score }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

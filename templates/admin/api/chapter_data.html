@@ -1,0 +1,6 @@
+{
+    "id": {{ chapter.id }},
+    "name": "{{ chapter.name|replace('"', '\\"') }}",
+    "description": "{{ chapter.description|replace('"', '\\"')|replace('\n', '\\n') }}",
+    "subject_id": {{ chapter.subject_id }}
+} 

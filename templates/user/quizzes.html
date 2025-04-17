@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Quizzes - {{ chapter.name }} - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Quizzes in {{ chapter.name }}</h5>
+                    <a href="{{ url_for('view_chapters', subject_id=chapter.subject.id) }}" class="btn btn-secondary">Back to Chapters</a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for quiz in quizzes %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ quiz.title }}</h5>
+                                    <p class="card-text">
+                                        <strong>Date:</strong> {{ quiz.date_of_quiz.strftime('%Y-%m-%d %H:%M') }}<br>
+                                        <strong>Duration:</strong> {{ quiz.duration }} minutes<br>
+                                        <strong>Questions:</strong> {{ quiz.questions|length }}
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        {% if quiz in available_quizzes %}
+                                            <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">
+                                                Take Quiz
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-secondary" disabled>
+                                                Not Available
+                                            </button>
+                                        {% endif %}
+                                        {% if quiz in attempted_quizzes %}
+                                            {% set attempt = quiz.attempts|selectattr('user_id', 'equalto', current_user.id)|first %}
+                                            <a href="{{ url_for('view_quiz_analysis', attempt_id=attempt.id) }}" class="btn btn-info">
+                                                View Analysis
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

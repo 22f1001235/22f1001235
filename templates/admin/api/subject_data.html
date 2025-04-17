@@ -1,0 +1,6 @@
+{
+    "id": {{ subject.id }},
+    "name": "{{ subject.name|replace('"', '\\"') }}",
+    "description": "{{ subject.description|replace('"', '\\"')|replace('\n', '\\n') }}",
+    "resource": "{{ subject.resource|replace('"', '\\"') }}"
+} 

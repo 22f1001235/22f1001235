@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard - Quiz Master{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+    .dashboard-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-card h3 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .stat-card h6 {
+        font-size: 1rem;
+        opacity: 0.8;
+        margin: 0;
+    }
+    
+    .subject-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .subject-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .subject-card .card-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .subject-card .card-text {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .subject-card .btn {
+        border-radius: 25px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .subject-card .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .table thead th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        color: #2c3e50;
+        font-weight: 600;
+        padding: 15px;
+    }
+    
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    .badge {
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+    
+    .welcome-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .welcome-section h2 {
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .welcome-section p {
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2>Welcome back, {{ current_user.full_name }}!</h2>
+                <p>Here's your performance overview</p>
+            </div>
+            <div class="col-auto">
+                <a href="{{ url_for('logout') }}" class="btn btn-light">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="dashboard-card card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">
+                        <i class="fas fa-chart-line me-2"></i>Your Performance Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <h6>Average Score</h6>
+                                <h3>
+                                    {% if quiz_attempts|length > 0 %}
+                                        {{ "%.1f"|format(quiz_attempts|map(attribute='score')|sum / quiz_attempts|length) }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);">
+                                <h6>Total Attempts</h6>
+                                <h3>{{ quiz_attempts|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-card" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+                                <h6>Pass Rate</h6>
+                                <h3>
+                                    {% set passed_attempts = quiz_attempts|selectattr('score', '>=', 40)|list|length %}
+                                    {% if quiz_attempts|length > 0 %}
+                                        {{ "%.1f"|format((passed_attempts / quiz_attempts|length) * 100) }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);">
+                                <h6>Best Score</h6>
+                                <h3>
+                                    {% if quiz_attempts|length > 0 %}
+                                        {{ quiz_attempts|map(attribute='score')|max }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dashboard-card card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Subject-wise Performance
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="subjectPerformanceChart"></canvas>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Available Subjects -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-card card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-primary">
+                        <i class="fas fa-book me-2"></i>Available Subjects
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for subject in subjects %}
+                        <div class="col-md-4 mb-4">
+                            <div class="subject-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-book-open me-2"></i>{{ subject.name }}
+                                    </h5>
+                                    <p class="card-text">{{ subject.description }}</p>
+                                    <a href="{{ url_for('view_chapters', subject_id=subject.id) }}" class="btn btn-primary">
+                                        <i class="fas fa-arrow-right me-2"></i>View Chapters
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- Quiz History -->
+    <div class="dashboard-card card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-primary">
+                <i class="fas fa-history me-2"></i>Quiz History
+            </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                            <th>Quiz Title</th>
+                                    <th>Subject</th>
+                                    <th>Score</th>
+                            <th>Date Attempted</th>
+                            <th>Time Taken</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attempt in quiz_attempts %}
+                                <tr>
+                            <td>
+                                <i class="fas fa-question-circle me-2"></i>{{ attempt.quiz.title }}
+                            </td>
+                            <td>
+                                <i class="fas fa-book me-2"></i>{{ attempt.quiz.chapter.subject.name }}
+                            </td>
+                            <td>
+                                <span class="badge {% if attempt.score >= 70 %}bg-success{% elif attempt.score >= 40 %}bg-warning{% else %}bg-danger{% endif %}">
+                                    <i class="fas fa-star me-1"></i>{{ attempt.score }}%
+                                </span>
+                            </td>
+                            <td>
+                                <i class="fas fa-calendar me-2"></i>{{ attempt.date_attempted.strftime('%Y-%m-%d %H:%M') }}
+                            </td>
+                            <td>
+                                <i class="fas fa-clock me-2"></i>
+                                {% if attempt.start_time and attempt.date_attempted %}
+                                    {% set duration = attempt.date_attempted - attempt.start_time %}
+                                    {% set hours = duration.seconds // 3600 %}
+                                    {% set minutes = (duration.seconds % 3600) // 60 %}
+                                    {% set seconds = duration.seconds % 60 %}
+                                    {{ "%02d:%02d:%02d"|format(hours, minutes, seconds) }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Subject Performance Chart
+const subjectData = {
+    labels: {{ subjects|map(attribute='name')|list|tojson }},
+    datasets: [{
+        label: 'Your Average Score',
+        data: [
+            {% for subject in subjects %}
+                {% set subject_attempts = quiz_attempts|selectattr('quiz.chapter.subject_id', 'equalto', subject.id)|list %}
+                {% if subject_attempts|length > 0 %}
+                    {{ (subject_attempts|map(attribute='score')|sum / subject_attempts|length)|round(1) }}
+                {% else %}
+                    0
+                {% endif %}{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+        borderRadius: 5
+    }]
+};
+
+const ctx = document.getElementById('subjectPerformanceChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: subjectData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 
